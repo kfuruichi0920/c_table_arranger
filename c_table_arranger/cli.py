@@ -29,12 +29,18 @@ from .formatter import ArrayFormatter, OutputFormat
     type=click.Path(path_type=Path),
     help='Output file (default: stdout)'
 )
+@click.option(
+    '--transpose', '-t',
+    is_flag=True,
+    help='Transpose output: [N] as 1 column, [N][M] as M rows × N columns'
+)
 @click.version_option()
 def main(
     input_file: Path,
     output_format: str,
     names_only: bool,
-    output: Optional[Path]
+    output: Optional[Path],
+    transpose: bool
 ) -> None:
     """Extract and format array data from C source files.
     
@@ -58,7 +64,7 @@ def main(
         
         # Format output
         format_enum = OutputFormat(output_format.lower())
-        formatter = ArrayFormatter(format_enum)
+        formatter = ArrayFormatter(format_enum, transpose=transpose)
         result = formatter.format_arrays(arrays, names_only)
         
         # Write output

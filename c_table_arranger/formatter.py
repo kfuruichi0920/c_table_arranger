@@ -17,9 +17,10 @@ class OutputFormat(Enum):
 class ArrayFormatter:
     """Formats array data for output."""
     
-    def __init__(self, format_type: OutputFormat = OutputFormat.SPACE) -> None:
+    def __init__(self, format_type: OutputFormat = OutputFormat.SPACE, transpose: bool = False) -> None:
         """Initialize formatter with specified format."""
         self.format_type = format_type
+        self.transpose = transpose
     
     def format_arrays(self, arrays: List[ArrayInfo], names_only: bool = False) -> str:
         """Format all arrays according to the specified format."""
@@ -102,6 +103,10 @@ class ArrayFormatter:
         
         # Original processing without splitting large arrays
         
+        # Apply transpose if requested
+        if self.transpose:
+            normalized_data = self._transpose_data(normalized_data, len(array.max_dimensions))
+        
         # Format based on output type
         if self.format_type == OutputFormat.SPACE:
             formatted_lines = self._format_space_separated(normalized_data)
@@ -144,6 +149,42 @@ class ArrayFormatter:
             # Don't add empty lines between slices - keep them compact
         
         return lines
+    
+    def _transpose_data(self, data: List[List[Any]], dimensions: int) -> List[List[Any]]:
+        """Transpose data based on dimension count."""
+        if not data:
+            return data
+            
+        if dimensions == 1:
+            # For 1D arrays: convert from 1 row to 1 column (each element becomes a row)
+            if len(data) == 1:
+                row_data = data[0]
+                return [[item] for item in row_data]
+            else:
+                return data
+        elif dimensions == 2:
+            # For 2D arrays: transpose M rows × N columns to N rows × M columns
+            if not data or not data[0]:
+                return data
+            
+            # Get the maximum number of columns
+            max_cols = max(len(row) for row in data)
+            
+            # Transpose: each column becomes a row
+            transposed = []
+            for col_idx in range(max_cols):
+                new_row = []
+                for row in data:
+                    if col_idx < len(row):
+                        new_row.append(row[col_idx])
+                    else:
+                        new_row.append('x')  # Fill missing values
+                transposed.append(new_row)
+            
+            return transposed
+        else:
+            # For higher dimensions, no transpose for now
+            return data
     
     def _format_space_separated(self, data: List[List[Any]]) -> List[str]:
         """Format data as space-separated columns."""
