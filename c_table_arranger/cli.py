@@ -63,10 +63,14 @@ def main(
         
         # Write output
         if output:
-            output.write_text(result, encoding='utf-8')
+            # Ensure proper line endings for file output - strip all whitespace and add single LF
+            clean_result = result.rstrip('\n\r\t ') + '\n'
+            output.write_text(clean_result, encoding='utf-8')
             click.echo(f"Output written to {output}")
         else:
-            click.echo(result)
+            # For console output, remove any trailing whitespace/newlines including CR and LF
+            clean_result = result.rstrip('\n\r\t ')
+            click.echo(clean_result)
     
     except FileNotFoundError:
         click.echo(f"Error: File '{input_file}' not found.", err=True)

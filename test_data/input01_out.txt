@@ -1,6 +1,6 @@
----
+//----------------------------------------------------------------
 Array: const uchar_t o_ucJudgeResult[AA][BB]
-Dimensions: [6][4] (6 rows × 4 columns)
+Dimensions: [6][4]
 
 o_ucJudgeResult[][BB] = 
 ABCD_MYSELF     ABCD_MYSELF     ABCD_MYSELF     ABCD_MYSELF
@@ -10,9 +10,10 @@ ABCD_MYSELF     ABCD_NOT_MYSELF ABCD_MYSELF     ABCD_NOT_MYSELF
 ABCD_NOT_MYSELF ABCD_MYSELF     ABCD_NOT_MYSELF ABCD_MYSELF
 ABCD_NOT_MYSELF ABCD_MYSELF     ABCD_NOT_MYSELF ABCD_MYSELF
 
----
+
+//----------------------------------------------------------------
 Array: int a[][][][]
-Dimensions: [2][2][3][3] (multi-dimensional array)
+Dimensions: [2][2][3][3]
 
 a[0][0][][] =
 1 2 3
@@ -35,9 +36,9 @@ a[1][1][][] =
 114 115 116
 
 
----
+//----------------------------------------------------------------
 Array: ABCDEFG b[2][][]
-Dimensions: [2][2][2] (multi-dimensional array)
+Dimensions: [2][2][2]
 
 b[0][][] =
 1 2 3
@@ -48,9 +49,27 @@ b[1][][] =
 14 15 16
 
 
----
+//----------------------------------------------------------------
 Array: static int one_dim_array[]
-Dimensions: [1]
+Dimensions: [4]
 
 one_dim_array[] = 
 1 2   4
+
+
+//----------------------------------------------------------------
+Array: const srv_matrix_t o_stMatrixJump_VoiceWhole[SRV_MATRIXJUMP_VOICEWHOLE_MAX]
+Dimensions: [11][1]
+
+o_stMatrixJump_VoiceWhole[][] = 
+Srv_MtrxPrcesUndefinedState
+Srv_MtrxPrcesNop
+Srv_MtrxPrcesBcchInfoAllChUsed
+Srv_MtrxPrcesBcchInfo1ChUsed
+Srv_MtrxPrcesBcchInfo2ChUsed
+Srv_MtrxPrcesBcchInfoAllChUnUsed
+Srv_MtrxPrcesSyncOutCch
+Srv_MtrxPrcesOnHook
+Srv_MtrxPrcesOffHook
+Srv_MtrxPrcesFailureTemp
+Srv_MtrxPrcesFailureRecovery

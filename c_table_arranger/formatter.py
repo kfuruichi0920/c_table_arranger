@@ -31,7 +31,11 @@ class ArrayFormatter:
             formatted = self._format_single_array(array)
             output_parts.append(formatted)
         
-        return '\n'.join(output_parts)
+        # Join arrays with double newlines to create section separators
+        result = '\n\n'.join(output_parts)
+        # Remove any trailing newlines/whitespace including CR and LF
+        result = result.rstrip('\n\r\t ')
+        return result
     
     def _format_names_only(self, arrays: List[ArrayInfo]) -> str:
         """Format array names only."""
@@ -43,28 +47,17 @@ class ArrayFormatter:
         lines = []
         
         # Header separator
-        lines.append("---")
+        lines.append("//----------------------------------------------------------------")
         
-        # Array declaration
+        # Array declaration - use the original source code format
         decl = array.declaration
         full_name = f"{decl.storage_class + ' ' if decl.storage_class else ''}{decl.type_name} {decl.variable_name}"
-        
-        # Add dimension info
         dimension_str = ''.join(f"[{dim if dim else ''}]" for dim in decl.dimensions)
         lines.append(f"Array: {full_name}{dimension_str}")
         
-        # Dimension information  
-        if len(array.max_dimensions) == 1:
-            # For 1D arrays, show [1] if it's a single-row layout
-            if isinstance(array.data, list) and len(array.data) > 0:
-                lines.append(f"Dimensions: [1]")
-            else:
-                lines.append(f"Dimensions: [{array.max_dimensions[0]}]")
-        elif len(array.max_dimensions) == 2:
-            lines.append(f"Dimensions: [{array.max_dimensions[0]}][{array.max_dimensions[1]}] ({array.max_dimensions[0]} rows × {array.max_dimensions[1]} columns)")
-        else:
-            dims_str = ']['.join(str(d) for d in array.max_dimensions)
-            lines.append(f"Dimensions: [{dims_str}] (multi-dimensional array)")
+        # Dimension information - show actual parsed element counts
+        dims_str = ']['.join(str(d) for d in array.max_dimensions)
+        lines.append(f"Dimensions: [{dims_str}]")
         
         lines.append("")  # Empty line
         
@@ -74,7 +67,19 @@ class ArrayFormatter:
         else:
             lines.extend(self._format_multidimensional_data(array))
         
-        return '\n'.join(lines)
+        # Remove trailing empty lines from individual array output
+        result_lines = []
+        for line in lines:
+            result_lines.append(line)
+        
+        # Remove trailing empty lines
+        while result_lines and result_lines[-1] == "":
+            result_lines.pop()
+        
+        # Join lines and strip any trailing whitespace/newlines including CR and LF
+        result = '\n'.join(result_lines)
+        result = result.rstrip('\n\r\t ')
+        return result
     
     def _format_2d_data(self, array: ArrayInfo) -> List[str]:
         """Format 2D array data."""
@@ -95,13 +100,19 @@ class ArrayFormatter:
         extractor = ArrayExtractor()
         normalized_data = extractor.normalize_array_data(array)
         
+        # Original processing without splitting large arrays
+        
         # Format based on output type
         if self.format_type == OutputFormat.SPACE:
-            lines.extend(self._format_space_separated(normalized_data))
+            formatted_lines = self._format_space_separated(normalized_data)
         elif self.format_type == OutputFormat.TSV:
-            lines.extend(self._format_tsv(normalized_data))
+            formatted_lines = self._format_tsv(normalized_data)
         elif self.format_type == OutputFormat.CSV:
-            lines.extend(self._format_csv(normalized_data))
+            formatted_lines = self._format_csv(normalized_data)
+        
+        # Remove empty lines from the formatted output
+        non_empty_lines = [line for line in formatted_lines if line.strip()]
+        lines.extend(non_empty_lines)
         
         return lines
     
@@ -130,7 +141,7 @@ class ArrayFormatter:
             elif self.format_type == OutputFormat.CSV:
                 lines.extend(self._format_csv(slice_data))
             
-            lines.append("")  # Empty line between slices
+            # Don't add empty lines between slices - keep them compact
         
         return lines
     
@@ -144,6 +155,8 @@ class ArrayFormatter:
         for row in data:
             for i, cell in enumerate(row):
                 cell_str = str(cell) if cell != '' else ' '
+                # Remove any CR/LF from cell content
+                cell_str = cell_str.replace('\r', '').replace('\n', ' ')
                 if i >= len(col_widths):
                     col_widths.append(len(cell_str))
                 else:
@@ -159,10 +172,14 @@ class ArrayFormatter:
                     cell_str = ' ' * col_widths[i] if i < len(col_widths) - 1 else ' '
                 else:
                     cell_str = str(cell)
+                    # Remove any CR/LF from cell content
+                    cell_str = cell_str.replace('\r', '').replace('\n', ' ')
                     if i < len(col_widths) - 1:  # Don't pad the last column
                         cell_str = cell_str.ljust(col_widths[i])
                 formatted_cells.append(cell_str)
-            lines.append(' '.join(formatted_cells))
+            # Strip trailing whitespace from each line
+            line = ' '.join(formatted_cells).rstrip()
+            lines.append(line)
         
         return lines
     
