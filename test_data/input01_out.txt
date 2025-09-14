@@ -36,7 +36,7 @@ a[1][1][][] =
 
 
 ---
-Array: int b[2][][]
+Array: ABCDEFG b[2][][]
 Dimensions: [2][2][2] (multi-dimensional array)
 
 b[0][][] =
