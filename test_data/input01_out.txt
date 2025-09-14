@@ -1,0 +1,56 @@
+---
+Array: const uchar_t o_ucJudgeResult[AA][BB]
+Dimensions: [6][4] (6 rows × 4 columns)
+
+o_ucJudgeResult[][BB] = 
+ABCD_MYSELF     ABCD_MYSELF     ABCD_MYSELF     ABCD_MYSELF
+ABCD_MYSELF     ABCD_MYSELF     ABCD_MYSELF     ABCD_MYSELF
+ABCD_MYSELF     ABCD_NOT_MYSELF ABCD_MYSELF     ABCD_NOT_MYSELF
+ABCD_MYSELF     ABCD_NOT_MYSELF ABCD_MYSELF     ABCD_NOT_MYSELF
+ABCD_NOT_MYSELF ABCD_MYSELF     ABCD_NOT_MYSELF ABCD_MYSELF
+ABCD_NOT_MYSELF ABCD_MYSELF     ABCD_NOT_MYSELF ABCD_MYSELF
+
+---
+Array: int a[][][][]
+Dimensions: [2][2][3][3] (multi-dimensional array)
+
+a[0][0][][] =
+1 2 3
+4 5 6
+x x x
+
+a[0][1][][] =
+11 12 13
+14 15 16
+x  x  x
+
+a[1][0][][] =
+101 102 103
+104 105 106
+104 105 106
+
+a[1][1][][] =
+111 112 113
+114 115 116
+114 115 116
+
+
+---
+Array: int b[2][][]
+Dimensions: [2][2][2] (multi-dimensional array)
+
+b[0][][] =
+1 2 3
+4 5 6
+
+b[1][][] =
+11 12 13
+14 15 16
+
+
+---
+Array: static int one_dim_array[]
+Dimensions: [1]
+
+one_dim_array[] = 
+1 2   4
