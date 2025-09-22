@@ -6,11 +6,20 @@ from typing import Optional
 
 import click
 
+from . import __version__
+
 from .array_extractor import ArrayExtractor
 from .formatter import ArrayFormatter, OutputFormat
 
+PROGRAM_NAME = "C Table Arranger"
+HELP_TEXT = (
+    f"{PROGRAM_NAME} v{__version__}\n\n"
+    "Extract and format array data from C source files.\n\n"
+    "INPUT_FILE: Path to C source file to process\n"
+)
 
-@click.command()
+
+@click.command(help=HELP_TEXT)
 @click.argument('input_file', type=click.Path(exists=True, path_type=Path))
 @click.option(
     '--format', '-f',
@@ -34,7 +43,7 @@ from .formatter import ArrayFormatter, OutputFormat
     is_flag=True,
     help='Transpose output: [N] as 1 column, [N][M] as M rows × N columns'
 )
-@click.version_option()
+@click.version_option(version=__version__, prog_name=PROGRAM_NAME)
 def main(
     input_file: Path,
     output_format: str,
