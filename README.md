@@ -59,6 +59,16 @@ c-table-arranger input.c -o output.txt
 
 注: 実際の CLI オプションは実装に依存します。正確なオプション一覧を README に載せたい場合は、`c-table-arranger --help` の出力を追加することを推奨します。
 
+### Version
+
+You can display the current program version from the CLI:
+
+```powershell
+c-table-arranger --version
+```
+
+The same version string also appears at the top of `c-table-arranger --help`.
+
 ## ライブラリ（Python API）
 
 Python スクリプト内で解析機能を利用する例:
