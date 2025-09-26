@@ -43,47 +43,55 @@ HELP_TEXT = (
     is_flag=True,
     help='Transpose output: [N] as 1 column, [N][M] as M rows × N columns'
 )
+@click.option(
+    '--include-comments',
+    is_flag=True,
+    help='Include C comments in the formatted output'
+)
 @click.version_option(version=__version__, prog_name=PROGRAM_NAME)
 def main(
     input_file: Path,
     output_format: str,
     names_only: bool,
     output: Optional[Path],
-    transpose: bool
+    transpose: bool,
+    include_comments: bool
 ) -> None:
     """Extract and format array data from C source files.
     
     INPUT_FILE: Path to C source file to process
     """
     try:
-        # Read input file
+        # 入力ファイルを読み込み、必要に応じて文字コードを切り替えます。
         try:
             content = input_file.read_text(encoding='utf-8')
         except UnicodeDecodeError:
-            # Try with different encoding
+            # 文字コードが不明な場合は latin-1 を後退戦略として試します。
             content = input_file.read_text(encoding='latin-1')
         
-        # Extract arrays
+        # 抽出器を用意して、対象ファイルから配列情報を収集します。
         extractor = ArrayExtractor()
-        arrays = extractor.extract_arrays(content)
+        # 配列宣言と初期化子を解析し、整形に必要な情報を得ます。
+        arrays = extractor.extract_arrays(content, include_comments=include_comments)
         
         if not arrays:
             click.echo("No arrays found in the input file.", err=True)
             sys.exit(1)
         
-        # Format output
+        # 出力形式に合わせて整形処理を実行します。
         format_enum = OutputFormat(output_format.lower())
         formatter = ArrayFormatter(format_enum, transpose=transpose)
+        # 整形ルールに従って表示用の文字列を作成します。
         result = formatter.format_arrays(arrays, names_only)
         
-        # Write output
+        # 出力先に応じて書き出し方法を変えます。
         if output:
-            # Ensure proper line endings for file output - strip all whitespace and add single LF
+            # ファイル出力時は末尾の空白を整え、LF を 1 つだけ追加します。
             clean_result = result.rstrip('\n\r\t ') + '\n'
             output.write_text(clean_result, encoding='utf-8')
             click.echo(f"Output written to {output}")
         else:
-            # For console output, remove any trailing whitespace/newlines including CR and LF
+            # 端末出力では末尾の不要な空白のみ除去します。
             clean_result = result.rstrip('\n\r\t ')
             click.echo(clean_result)
     

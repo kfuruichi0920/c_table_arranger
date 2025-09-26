@@ -56,6 +56,7 @@ c-table-arranger input.c -o output.txt
 - `-o, --output <file>` : 出力先ファイルを指定
 - `-v, --verbose` : 詳細ログを有効化
 - `--format <style>` : 出力スタイルを指定（デフォルトはスペース区切り）
+- `--include-comments` : 初期化子内の C コメントを出力に含める（デフォルトでは除外）
 
 注: 実際の CLI オプションは実装に依存します。正確なオプション一覧を README に載せたい場合は、`c-table-arranger --help` の出力を追加することを推奨します。
 
