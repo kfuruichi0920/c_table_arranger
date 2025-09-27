@@ -149,6 +149,30 @@ uv run --frozen pyright
 
 コード規約や CI の流れについてはプロジェクト内のガイド（`CLAUD.md` 等）を参照してください。
 
+## スタンドアロン実行ファイルの作成
+
+Windows 向けに単一の実行ファイル（`c-table-arranger.exe`）を作成する手順です。PyInstaller を利用します。
+
+1. PyInstaller をインストールします。
+   ```powershell
+   uv add --dev pyinstaller
+   # もしくは
+   pip install pyinstaller
+   ```
+2. ルートディレクトリでビルドスクリプトを実行します。
+   ```powershell
+   python build_binary.py
+   ```
+   `dist/` フォルダに `c-table-arranger.exe` が生成されます。
+
+PyInstaller のオプションを直接指定したい場合は、以下のコマンドでも同じ結果が得られます。
+
+```powershell
+pyinstaller --onefile --console --name c-table-arranger --distpath dist c_table_arranger/main.py
+```
+
+より細かな設定が必要な場合は、同梱の `c-table-arranger.spec` を編集し、`pyinstaller c-table-arranger.spec` を実行してください。
+
 ## トラブルシューティング
 
 - 解析でエラーが出る場合:
