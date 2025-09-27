@@ -3,7 +3,7 @@
 from importlib import metadata
 
 # ランタイム時にパッケージメタデータを参照してバージョン番号を取得します。
-DEFAULT_VERSION = "0.1.0"
+DEFAULT_VERSION = "0.2.0"
 
 try:
     # パッケージがインストールされていれば正式なバージョンを使用します。
